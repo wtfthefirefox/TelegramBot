@@ -97,11 +97,13 @@ def createArrOfStd(time):
 	return arr
 
 def createArrRightStd(name, arr):
-	for a in arr:
-		if (a == name):
-			arr.remove(a)
+	arrStd = arr.copy()
 
-	return arr
+	for a in arrStd:
+		if (a == name):
+			arrStd.remove(a)
+
+	return arrStd
 
 def createStrRightStd(arr):	
 	s = ''
@@ -365,25 +367,29 @@ def repeat_all_messages(message):
 			with open("output/date.txt", encoding = "utf8") as file:
 				arrStd = createArrOfStd(file.read())
 
-			data = createArrRightStd(config.dictOfStudens[message.chat.id]['name'], arrStd)
+			if (1 <= int(message.text) <= len(arrStd)):
 
-			arr = config.resultsOfInterview
-			arr[data[int(message.text) - 1]] += 1
+				data = createArrRightStd(config.dictOfStudens[message.chat.id]['name'], arrStd)
 
-			d[message.chat.id] = ''
+				if (1 <= int(message.text) <= len(data)):
 
-			with open('config.py', encoding = "utf8") as file:
-				spl = file.read().split('\n\n')
+					arr = config.resultsOfInterview
+					arr[data[int(message.text) - 1]] += 1
 
-			spl[2] = f'resultsOfInterview = {arr}'
-			d = config.checkYourVote
-			d[message.chat.id] = ''
-			spl[3] = f'checkYourVote = {d}'
+					d[message.chat.id] = ''
 
-			with open('config.py', "w", encoding = "utf8") as file:
-				file.write(f'{spl[0]}\n\n{spl[1]}\n\n{spl[2]}\n\n{spl[3]}')
+					with open('config.py', encoding = "utf8") as file:
+						spl = file.read().split('\n\n')
 
-			bot.send_message(message.chat.id, "Спасибо за ваш голос!")	
+					spl[2] = f'resultsOfInterview = {arr}'
+					d = config.checkYourVote
+					d[message.chat.id] = ''
+					spl[3] = f'checkYourVote = {d}'
+
+					with open('config.py', "w", encoding = "utf8") as file:
+						file.write(f'{spl[0]}\n\n{spl[1]}\n\n{spl[2]}\n\n{spl[3]}')
+
+					bot.send_message(message.chat.id, "Спасибо за ваш голос!")	
 		else:
 			bot.send_message(message.chat.id, "Вы уже проголосовали!")	
 
